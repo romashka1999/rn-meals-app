@@ -1,13 +1,13 @@
-import { StyleSheet, Text, View, FlatList } from "react-native";
+import { StyleSheet, FlatList } from "react-native";
 import React from "react";
-import type { StackScreenProps } from "@react-navigation/stack";
+import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 import { CATEGORIES } from "../data/dummy-data";
 import Category from "../models/category";
 import CategoryGridTile from "../components/CategoryGridTile";
-import { RootStackParamList } from "../App";
+import { CategoriesStackParamList } from "../App";
 
-type Props = StackScreenProps<RootStackParamList, "MealsCategories">;
+type Props = NativeStackScreenProps<CategoriesStackParamList, "Drawer">;
 
 const CategoriesScreen: React.FC<Props> = ({ navigation }) => {
   const renderCategoryItem = (item: Category): JSX.Element => {

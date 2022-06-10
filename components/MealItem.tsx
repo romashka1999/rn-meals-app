@@ -7,6 +7,7 @@ interface Props {
   duration: number;
   complexity: string;
   affordability: string;
+  onPress: any;
 }
 
 const MealItem: React.FC<Props> = ({
@@ -15,10 +16,11 @@ const MealItem: React.FC<Props> = ({
   duration,
   complexity,
   affordability,
+  onPress,
 }) => {
   return (
     <View style={styles.mealItem}>
-      <Pressable android_ripple={{ color: "#ccc" }}>
+      <Pressable android_ripple={{ color: "#ccc" }} onPress={onPress}>
         <View>
           <Image source={{ uri: imageUrl }} style={styles.image} />
           <Text style={styles.title}>{title}</Text>

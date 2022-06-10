@@ -1,26 +1,25 @@
 import { StyleSheet, View } from "react-native";
-import React, { useLayoutEffect } from "react";
-import { StackScreenProps } from "@react-navigation/stack";
+import React from "react";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 import { MEALS } from "../data/dummy-data";
-import { RootStackParamList } from "../App";
+import { CategoriesStackParamList } from "../App";
 import { FlatList } from "react-native-gesture-handler";
 import Meal from "../models/meal";
 import MealItem from "../components/MealItem";
 
-type Props = StackScreenProps<RootStackParamList, "MealsOverview">;
+type Props = NativeStackScreenProps<CategoriesStackParamList, "MealsOverview">;
 
 const MealsOverviewScreen: React.FC<Props> = ({ route, navigation }) => {
-  const { categoryId, categoryTitle } = route.params;
-
-  // another wey of setting options dynamically
-  // useLayoutEffect(() => {
-  //   navigation.setOptions({
-  //     title: categoryTitle,
-  //   });
-  // }, [navigation, categoryTitle]);
+  const { categoryId } = route.params;
 
   const filteredMeals = MEALS.filter((m) => m.categoryIds.includes(categoryId));
+
+  const mealItemPressHandler = (mealId: string) => {
+    navigation.navigate("MealsDetail", {
+      mealId,
+    });
+  };
 
   const renderMealItem = (meal: Meal): JSX.Element => {
     return (
@@ -30,6 +29,7 @@ const MealsOverviewScreen: React.FC<Props> = ({ route, navigation }) => {
         duration={meal.duration}
         complexity={meal.complexity}
         affordability={meal.affordability}
+        onPress={mealItemPressHandler.bind(this, meal.id)}
       />
     );
   };
