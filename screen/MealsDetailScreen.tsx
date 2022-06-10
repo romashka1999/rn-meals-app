@@ -6,27 +6,48 @@ import {
   FlatList,
   Pressable,
 } from "react-native";
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Ionicons } from "@expo/vector-icons";
 
 import { CategoriesStackParamList } from "../App";
 import { MEALS } from "../data/dummy-data";
 import Meal from "../models/meal";
+import { FavoritesContext } from "../store/context/favorites-context";
 
 type Props = NativeStackScreenProps<CategoriesStackParamList, "MealsDetail">;
 
 const MealsDetailScreen: React.FC<Props> = ({ route, navigation }) => {
   const [meal, setMeal] = useState<Meal>();
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
+
+  const favoriteMealsCtx = useContext(FavoritesContext);
 
   useEffect(() => {
     const { mealId } = route.params;
 
     const currentMeal = MEALS.find((m) => m.id === mealId);
     setMeal(currentMeal);
+
+    const mealIsInFavorites = favoriteMealsCtx.exists(mealId);
+    setIsFavorite(mealIsInFavorites);
   }, []);
 
-  const favoritesPressHandler = () => {};
+  const favoritesPressHandler = () => {
+    if (!meal) {
+      return;
+    }
+
+    const mealIsInFavorites = favoriteMealsCtx.exists(meal.id);
+
+    if (!mealIsInFavorites) {
+      favoriteMealsCtx.addFavorite(meal.id);
+      setIsFavorite(true);
+    } else {
+      favoriteMealsCtx.removeFavorite(meal.id);
+      setIsFavorite(false);
+    }
+  };
 
   useLayoutEffect(() => {
     if (!meal) {
@@ -49,7 +70,10 @@ const MealsDetailScreen: React.FC<Props> = ({ route, navigation }) => {
             >
               <Ionicons
                 name="star"
-                style={{ color: "white", width: "100%" }}
+                style={{
+                  color: isFavorite ? "yellow" : "white",
+                  width: "100%",
+                }}
                 size={22}
               />
             </Pressable>
@@ -57,7 +81,7 @@ const MealsDetailScreen: React.FC<Props> = ({ route, navigation }) => {
         );
       },
     });
-  }, [navigation, meal]);
+  }, [navigation, meal, isFavorite]);
 
   return (
     <View style={styles.screen}>
